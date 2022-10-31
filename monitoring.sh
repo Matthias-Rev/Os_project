@@ -1,7 +1,7 @@
 #!/bin/bash
 var1=$1 var2=$2 var3=$3
 
-
+#pgrep to find id of process
 
 if [ "$var1" = "run" ]; then
 	if [ -x tinydb ]; then
