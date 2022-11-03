@@ -1,7 +1,10 @@
 #ifndef _QUERY_H
 #define _QUERY_H
 
+#include <time.h>
 #include "db.h"
+#include "student.h"
+
 
 typedef enum { QUERY_SUCCESS, QUERY_FAILURE, UNRECOGNISED_FIELD } QUERY_STATUS;
 
@@ -21,11 +24,16 @@ typedef struct {
 /**
  * Initialise a query_result_t structure.
  **/
-void query_result_init(query_result_t* result, const char* query);
+void query_result_init(query_result_t* result, char* query);
 
 /**
  * Add a student to a query result.
  **/
 void query_result_add(query_result_t* result, student_t s);
-
+void query_select(database_t *db, char *query);
+void query_update(database_t *db, char *query);
+void query_insert(database_t *db, char *query);
+void query_delete(database_t *db, char* query);
+void query_result_extend(query_result_t *query);
+void query_result_add(query_result_t *query, student_t student); 
 #endif

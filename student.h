@@ -10,7 +10,7 @@
  * Student structure type.
  **/
 typedef struct {
-    unsigned id;         /** Unique ID **/
+    unsigned int id;         /** Unique ID **/
     char fname[64];      /** Firstname **/
     char lname[64];      /** Lastname **/
     char section[64];    /** Section **/
