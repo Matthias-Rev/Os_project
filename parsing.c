@@ -29,32 +29,22 @@ bool parse_update(char* query, char* field_filter, char* value_filter, char* fie
     return true;
 }
 
-// test it and it goes correctly
-bool parse_insert(char* query, char* fname, char* lname, unsigned int* id, char* section, struct tm* birthdate) {
+bool parse_insert(char* query, char* fname, char* lname,  char* section, struct tm* birthdate) {
     char* token = strtok_r(NULL, " ", &query);
     if (token == NULL) {
         return false;
     }
     strcpy(fname, token);
-	printf("the fname=%s\n", fname);
     token = strtok_r(NULL, " ", &query);
     if (token == NULL) {
         return false;
     }
     strcpy(lname, token);
-	printf("the lname=%s\n", lname);
-    token = strtok_r(NULL, " ", &query);
-    if (token == NULL) {
-        return false;
-    }
-    *id = (unsigned)atol(token);
-	printf("the id= %d \n", *id);
     token = strtok_r(NULL, " ", &query);
     if (token == NULL) {
         return false;
     }
     strcpy(section, token);
-	printf("the section=%s\n", section);
     token = strtok_r(NULL, " ", &query);
     if (token == NULL) {
         return false;
@@ -69,18 +59,20 @@ bool parse_insert(char* query, char* fname, char* lname, unsigned int* id, char*
     return true;
 }
 
-// test correctly, works fine
+
 bool parse_selectors(char* query, char* field, char* value) {
     char* token = strtok_r(NULL, "=", &query);
     if (token == NULL) {
         return false;
     }
     strcpy(field, token);
+	printf("field: %s\n",field);
     token = strtok_r(NULL, "=", &query);
     if (token == NULL) {
         return false;
     }
     strcpy(value, token);
+	printf("value: %s\n",value);
 	token = strtok_r(NULL, "=", &query);
     if (token == NULL) {
         return true;

@@ -6,7 +6,7 @@
 #include <iterator>
 using namespace std;
 
-// works fine
+
 void db_save(database_t *db, const char *path) {
     FILE *f = fopen(path, "wb");
     if (!f) {
@@ -20,7 +20,7 @@ void db_save(database_t *db, const char *path) {
     fclose(f);
 }
 
-//works fine
+
 void db_load(database_t *db, const char *path) {
     FILE *file = fopen(path, "rb");
     cout << "Loading the database....\n" << endl;
@@ -38,25 +38,23 @@ void db_load(database_t *db, const char *path) {
 	cout << "Done !" << "\n" << endl;
 }
 
-//works fine
+
 void db_init(database_t *db) {
-  // Your code here
   db->lsize = 0;
   db->psize = 100;
   db->data = (student_t *) malloc ( sizeof (student_t) * db->psize);
 }
 
-//works fine
+// même principe que pour query_result_add
 void db_add(database_t *db, student_t student) {
-  // Your code here
-  char buffer[128];
+  char buffer[128]; // permet l'écriture de l'étudiant rajouté
   db_extend(db);
   db->data[db->lsize] = student;
   student_to_str(buffer, &student);
   db->lsize++;
 }
 
-//works fine
+// même principe que pour query_result_extend
 void db_extend(database_t *db){
 	if(db->lsize >= db->psize){
 		student_t* old_values = db->data;
@@ -68,25 +66,32 @@ void db_extend(database_t *db){
 	}
 }
 
-//works fine
+//permet de retier un étudiant de la database
 bool db_remove(database_t *db, size_t indice){
 	if (indice >= db->lsize){
 		return false;
 	}
 	db->lsize--;
+	// on réecrit la suite de la db, à la place de l'étudiant supprimé
 	for (size_t i = indice; i < db->lsize; i++){
 		db->data[i] = db->data[i+1];
 	}
 	return true;
 }
 
-//works fine
+/*
+ * La fonction db_search permet de chercher un champ particulier dans la db
+ * Cette fonction prend en argument l'addresse de la database, ainsi que
+ * la valeur cherché, une liste stockant les étudiants concernés, et enfin
+ * le champ recherché.  
+ */
+
 void db_search(database_t *db, char* value, vector<student_t> *list_value, char* field){
 	for (size_t i = 0; i<db->lsize; i++){
 		student_t student = db->data[i];
 		if (strcmp(field,"id")==0){
 			char buffer[10];
-			snprintf(buffer, sizeof(buffer), "%u", student.id);
+			snprintf(buffer, sizeof(buffer), "%u", student.id); //convertion de int -> char
 			if(strcmp(buffer,value)==0){
 				list_value->push_back(student);
 			}
@@ -108,7 +113,7 @@ void db_search(database_t *db, char* value, vector<student_t> *list_value, char*
 		}
 		if (strcmp(field, "birthdate")==0){
 			char time_b[11];
-			strftime(time_b, sizeof(time_b), "%d/%m/%Y", &student.birthdate);
+			strftime(time_b, sizeof(time_b), "%d/%m/%Y", &student.birthdate); //conversion struct tm -> char
 			if(strcmp(time_b, value)==0){
 				list_value->push_back(student);
 			}
