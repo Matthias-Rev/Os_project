@@ -66,13 +66,13 @@ bool parse_selectors(char* query, char* field, char* value) {
         return false;
     }
     strcpy(field, token);
-	printf("field: %s\n",field);
+	//printf("field: %s\n",field);
     token = strtok_r(NULL, "=", &query);
     if (token == NULL) {
         return false;
     }
     strcpy(value, token);
-	printf("value: %s\n",value);
+	//printf("value: %s\n",value);
 	token = strtok_r(NULL, "=", &query);
     if (token == NULL) {
         return true;

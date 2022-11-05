@@ -8,15 +8,25 @@
 #include <stdlib.h> /* EXIT_SUCCESS, EXIT_FAILURE */
 #include <sys/wait.h> /* wait, sleep */
 #include <unistd.h> /* fork, write */
-#include "db.cpp"
 #include <iostream>
 #include <string>
 #include <sys/mman.h>
 
+#include "db.cpp"
+#include "query.cpp"
+#include "student.c"
+
+
+
 #define READ 0
 #define WRITE 1
+#define QSIZE 256
+
+using namespace std;
 
 int count=0;
+database_t db;
+const char *db_path = "../students.bin";
 
 void handler(int signal);
 void child1(int read_fd);
@@ -28,16 +38,16 @@ void parent(int write_fd, int write_fd2, int write_fd3, int write_fd4);
 static void action(int sig){
 	switch (sig){
 		case SIGUSR1: printf("Fct Action : Signal SIGUSR1 reçu\n db_save\n");
-		//db_save;
+		//db_save(&db, db_path); 
 	}
 }
 
 int main(int argc, char const *argv[]){
-	const char *db_path = "../students.bin";
+	
 	if (argv[1]){
 		db_path = argv[1];
 	}
-	database_t db;
+
 	printf("\nWelcome to the Tiny Database!\n");                //Init_Menu
 	db_init(&db);
 	db_load(&db, db_path);
@@ -52,7 +62,7 @@ int main(int argc, char const *argv[]){
 	//creat childs
 	for(int i=0; i<4; i++){
 		if ((pid=fork()) == 0){
-			printf("mon pid est %d\n",getpid());
+			//printf("mon pid est %d\n",getpid());
 			switch (i){
 			case 0:
 				select = getpid();
@@ -78,7 +88,7 @@ int main(int argc, char const *argv[]){
 		//Principal process
 		
 		if(pid>0){
-			
+
 			
 			struct sigaction suser;
 			suser.sa_flags = 0;
@@ -92,7 +102,6 @@ int main(int argc, char const *argv[]){
 			close(ins_fd[READ]);
 			close(del_fd[READ]);
 			close(up_fd[READ]);
-			parent(sel_fd[WRITE], ins_fd[WRITE],del_fd[WRITE],up_fd[WRITE]);
 			
 			if(count == 1){
 				printf("CTRL+C enclenché\n");
@@ -101,16 +110,25 @@ int main(int argc, char const *argv[]){
 				close(ins_fd[WRITE]);
 				close(del_fd[WRITE]);
 				close(up_fd[WRITE]);
+				kill(SIGKILL, select);
+				kill(SIGKILL, insert);
+				kill(SIGKILL, deletes);
+				kill(SIGKILL, update);
+				//db_save(&db, db_path);
+				printf("Data has been saved !");
+				exit(1);
 			}
+			
+			parent(sel_fd[WRITE], ins_fd[WRITE],del_fd[WRITE],up_fd[WRITE]);
 		}
 			
 		//Child's behavior
-		
 		else if(pid == 0 && getpid()==select){
 			close(sel_fd[WRITE]);
 			child1(sel_fd[READ]);
 			if(count == 1){
 				kill(getppid(), SIGUSR1);
+				printf("je ferme ma mere");
 				close(sel_fd[READ]);
 			}
 		}
@@ -152,48 +170,69 @@ void handler(int signal){
 	switch(signal){
 	case SIGINT:
 		printf("\nWaiting for requests to terminate...\n");
-		++count;
-		break;
+		count++;
+		exit(0);
 	}
 }
 		//Child's Action
 		
 void child1(int read_fd){
-	char querie[16];
+	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
-	if(strcmp(querie,"select")==0)
-		printf("je peux lire %s\n",querie);
+	query_select(&db, querie);
 }
 void child2(int read_fd){
-	char querie[16];
+	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
-	if(strcmp(querie,"insert")==0)
-		printf("je peux lire %s\n",querie);
+	query_insert(&db, querie);
 }
 void child3(int read_fd){
-	char querie[16];
+	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
-	if(strcmp(querie,"delete")==0)
-		printf("je peux lire %s\n",querie);
+	query_delete(&db, querie);
 }
 void child4(int read_fd){
-	char querie[16];
+	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
-	if(strcmp(querie,"update")==0)
-		printf("je peux lire %s\n",querie);
+	query_update(&db, querie);
 }
 		//Principal process's Action
 		
 void parent(int write_fd, int write_fd2, int write_fd3, int write_fd4){
-	char querie[16];
-	printf("Entrez votre requete : \n");
-	scanf("< %s", querie);
-	// pas oublier de changer
-	// je vais le faire ici: différenciation
-	write(write_fd,querie,sizeof(querie));
-	write(write_fd2,querie,sizeof(querie));
-	write(write_fd3,querie,sizeof(querie));
-	write(write_fd4,querie,sizeof(querie));
+	char query_nam[256];
+	char query_opt[256];
+	
+	fgets(query_nam, 256, stdin);
+	if (isatty(fileno(stdin))){
+		
+		query_nam[strlen(query_nam)-1] = '\0'; 
+	}
+	char *ptr = query_nam;
+
+	char* token = strtok_r(NULL, " ", &ptr);
+	strcpy(query_nam,token);
+    if (token == NULL) {
+        printf("Error during reading");
+    }
+	cout << "query_nam: " <<query_nam << "\n";
+	token = strtok_r(NULL, "", &ptr);
+	strcpy(query_opt, token);
+	cout << "query_opt: " <<query_opt<<"\n";
+	token = strtok_r(NULL, "", &ptr);
+
+    if (token == NULL)
+		printf(" ");
+
+	if (strcmp(query_nam,"select")==0){
+		write(write_fd,query_opt,sizeof(query_opt));
+	}
+	if (strcmp(query_nam, "insert")==0){
+			write(write_fd2,query_opt,sizeof(query_opt));
+	}
+	if (strcmp(query_nam, "deletes")==0){
+		write(write_fd3,query_opt,sizeof(query_opt));
+	}
+	if (strcmp(query_nam, "updates")==0){
+		write(write_fd4,query_opt,sizeof(query_opt));			
+    }
 }
-
-

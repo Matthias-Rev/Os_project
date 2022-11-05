@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# enregistrer les arguments donner dans la commande
+var1=$1 var2=$2 var3=$3 var4=$4
+
+#liste permettant de stocker les PID parents
+list_v=()
+#liste sert à stocker tous les PID lié à tinydb
+list=$(pgrep test_s)
+
+for pid in $list; do
+	#permet de calculer le nombre d'enfant d'un PID
+	#si ce nombre est égal à 4, alors c'est un parent
+	len=$(pstree -p $pid | wc -w)
+	if [ "$len" == "4" ]; then
+		#rajoute le PID dans la liste
+		list_v+=("$pid")
+	fi
+done
+
+#calcul la longueur de la liste
+length=${#list_v[@]}
+
+#permet de détecter l'action à effectuer
+if [ "$var1" = "run" ]; then
+	# permet de lancer la db à l'adresse donnée
+	if [ "$var2" != "" ]; then
+		#vérifie si le fichier mentionner existe
+		if [ -f "$var2" ];then
+			#recherche si il y a un request file donné dans la commande
+			if [ "$var3" == "-f" ]; then
+				./test_s $var2 < $var4
+			else
+				./test_s $var2
+			fi
+		else
+			#la db n'existe pas donc on crée un fichier vide
+			echo "/!\ The specified file doesn't exist"
+			touch $var2
+			if [ "$var3" == "-f" ]; then
+				./test_s $var2 < $var4
+			else
+				./test_s $var2
+			fi
+		fi
+	else
+		if [ "$var3" == "-f"];then
+			./test_s < $var4
+		else
+			./test_s
+		fi
+	fi
+fi
+
+if [ "$var1" = "status" ]; then
+	#permet d'afficher le nombre de processus lancer
+	echo "$length instance running:"
+	for pid in ${list_v[@]}; do
+		echo "	>PID: $pid"
+	done
+fi
+
+if [ "$var1" = "sync" ]; then
+	echo "Found $length instances of tinydb"
+	for pid in ${list_v[@]}; do
+		echo "Sync process $pid..."
+		#envoie un signal permettant de sauvegarder la db
+		kill -SIGUSR1 $pid
+	done
+	echo "Done !"
+fi
+if [ "$var1" = "shutdown" ]; then
+	if [ "$var2" != "" ]; then
+		echo "wait"
+	else
+		for pid in  ${list_v[@]};do
+			# Demande la confirmation de la supression
+			echo "Would you like to shutdown this pid: $pid ? (Y/N)"
+			read response
+			if [ $response == "Y" ]; then
+				kill -SIGINT $pid
+			fi
+		done
+	fi
+fi
