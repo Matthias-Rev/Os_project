@@ -166,12 +166,14 @@ void query_insert(database_t *db, char* query){
 	char lname[64];
 	char section[64];
 	struct tm birthdate;
+	//unsigned int id;
 	if (parse_insert(query, fname, lname, section, &birthdate) == false){ perror("Problem has occured"); }
 	student_t new_student ;
 	strcpy(new_student.fname, fname);
 	strcpy(new_student.lname, lname);
 	strcpy(new_student.section, section);
 	new_student.birthdate = birthdate;
+	//new_student.id = id;
 	query_result_add(&result_i, new_student);
 
 	size_t i; // iterateur de la database

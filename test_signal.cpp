@@ -11,12 +11,14 @@
 #include <iostream>
 #include <string>
 #include <sys/mman.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #include "db.cpp"
 #include "query.cpp"
 #include "student.c"
 
-
+enum {SEGMENT_SIZE = 0x6400};
 
 #define READ 0
 #define WRITE 1
@@ -25,9 +27,10 @@
 using namespace std;
 
 int count=0;
-database_t db;
-const char *db_path = "../students.bin";
+//database_t db;
 
+const char *db_path = "../students.bin";
+database_t *db = (database_t*)mmap(NULL, sizeof(database_t)*4096, PROT_READ|PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS,-1,0);
 void handler(int signal);
 void child1(int read_fd);
 void child2(int read_fd);
@@ -47,12 +50,15 @@ int main(int argc, char const *argv[]){
 	if (argv[1]){
 		db_path = argv[1];
 	}
-
-	printf("\nWelcome to the Tiny Database!\n");                //Init_Menu
-	db_init(&db);
-	db_load(&db, db_path);
-	if(mmap(&db, sizeof(student_t)*db.psize, PROT_NONE,
-							MAP_SHARED,0,0)){ cout << "sucessfuly shared\n";}
+	
+	//db_load(db, db_path);
+	db_init(db);
+	db_load(db, db_path);
+	printf("\nWelcome to the Tiny Database!\n");//Init_Menu
+	//db_init(db);
+	//db_load(db, db_path);
+	//(mmap(db->data, sizeof(student_t)*lenght, PROT_READ|PROT_WRITE,MAP_SHARED,0,0));
+	//cout << db->lsize;
 	int sel_fd[2], ins_fd[2],del_fd[2], up_fd[2], select, insert, deletes, update;
 	pipe(sel_fd);
 	pipe(ins_fd);
@@ -124,6 +130,7 @@ int main(int argc, char const *argv[]){
 			
 		//Child's behavior
 		else if(pid == 0 && getpid()==select){
+			cout << db->psize;
 			close(sel_fd[WRITE]);
 			child1(sel_fd[READ]);
 			if(count == 1){
@@ -133,6 +140,7 @@ int main(int argc, char const *argv[]){
 			}
 		}
 		else if(pid == 0 && getpid()==insert){
+			cout << db->psize;
 			close(ins_fd[WRITE]);
 			child2(ins_fd[READ]);
 			if(count==1){
@@ -170,6 +178,12 @@ void handler(int signal){
 	switch(signal){
 	case SIGINT:
 		printf("\nWaiting for requests to terminate...\n");
+		size_t i;
+		char buffer[256];
+		for(i=0; i<db->lsize;i++){
+			student_t *s = &db->data[i];
+			student_to_str(buffer, s);
+		}
 		count++;
 		exit(0);
 	}
@@ -179,22 +193,22 @@ void handler(int signal){
 void child1(int read_fd){
 	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
-	query_select(&db, querie);
+	query_select(db, querie);
 }
 void child2(int read_fd){
 	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
-	query_insert(&db, querie);
+	query_insert(db, querie);
 }
 void child3(int read_fd){
 	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
-	query_delete(&db, querie);
+	query_delete(db, querie);
 }
 void child4(int read_fd){
 	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
-	query_update(&db, querie);
+	query_update(db, querie);
 }
 		//Principal process's Action
 		
@@ -227,7 +241,7 @@ void parent(int write_fd, int write_fd2, int write_fd3, int write_fd4){
 		write(write_fd,query_opt,sizeof(query_opt));
 	}
 	if (strcmp(query_nam, "insert")==0){
-			write(write_fd2,query_opt,sizeof(query_opt));
+		write(write_fd2,query_opt,sizeof(query_opt));
 	}
 	if (strcmp(query_nam, "deletes")==0){
 		write(write_fd3,query_opt,sizeof(query_opt));

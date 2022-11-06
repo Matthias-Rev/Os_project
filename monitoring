@@ -71,7 +71,7 @@ if [ "$var1" = "sync" ]; then
 fi
 if [ "$var1" = "shutdown" ]; then
 	if [ "$var2" != "" ]; then
-		echo "wait"
+		kill -SIGINT $var2
 	else
 		for pid in  ${list_v[@]};do
 			# Demande la confirmation de la supression

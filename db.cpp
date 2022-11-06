@@ -1,11 +1,12 @@
 #include "db.h"
-#include <iostream>
 #include "student.h"
 #include <vector>
 #include <string>
 #include <iterator>
+#include <iostream>
+#include <sys/mman.h>
 using namespace std;
-
+int count1 =0;
 
 void db_save(database_t *db, const char *path) {
     FILE *f = fopen(path, "wb");
@@ -23,7 +24,6 @@ void db_save(database_t *db, const char *path) {
 
 void db_load(database_t *db, const char *path) {
     FILE *file = fopen(path, "rb");
-    cout << "Loading the database....\n" << endl;
     if (!file) {
         perror("Could not open the DB file");
         exit(1);
@@ -41,8 +41,13 @@ void db_load(database_t *db, const char *path) {
 
 void db_init(database_t *db) {
   db->lsize = 0;
-  db->psize = 100;
-  db->data = (student_t *) malloc ( sizeof (student_t) * db->psize);
+  db->psize = 1000;
+  //if(mmap(db->data, sizeof(student_t)*db->psize, PROT_READ | PROT_WRITE,
+							//MAP_SHARED | MAP_ANONYMOUS,-1,0)){ cout << "sucessfuly shared\n";}
+  db->data = (student_t*)mmap(NULL,sizeof (student_t) * db->psize, PROT_READ|PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS,-1,0);
+  if(db->data == MAP_FAILED){
+    printf("Mapping Failed\n");
+  }
 }
 
 // même principe que pour query_result_add
@@ -60,7 +65,7 @@ void db_extend(database_t *db){
 		student_t* old_values = db->data;
 		size_t old_size = db->psize;
 		db->psize = db->psize * 2;
-        db->data = (student_t *) malloc(sizeof(student_t) * db->psize);
+        db->data = (student_t *) mmap(NULL,sizeof (student_t) * db->psize, PROT_READ|PROT_WRITE,MAP_SHARED,-1,0);
 		memcpy(db->data, old_values, old_size* sizeof(student_t));
         free(old_values);
 	}
