@@ -247,7 +247,9 @@ void query_delete(database_t *db,char* query){
 			}
 		}
 		if (strcmp(field,"lname")==0){
+			cout << "here lname";
 			if(strcmp(student.lname, value)==0){
+				cout << "enter lname";
 				query_result_add(&result_d, student);
 				if(db_remove(db, y)){cout << "remove correctly\n" << endl;}
 				result_d.status = QUERY_SUCCESS;

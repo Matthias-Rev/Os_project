@@ -243,10 +243,10 @@ void parent(int write_fd, int write_fd2, int write_fd3, int write_fd4){
 	if (strcmp(query_nam, "insert")==0){
 		write(write_fd2,query_opt,sizeof(query_opt));
 	}
-	if (strcmp(query_nam, "deletes")==0){
+	if (strcmp(query_nam, "delete")==0){
 		write(write_fd3,query_opt,sizeof(query_opt));
 	}
-	if (strcmp(query_nam, "updates")==0){
+	if (strcmp(query_nam, "update")==0){
 		write(write_fd4,query_opt,sizeof(query_opt));			
     }
 }
