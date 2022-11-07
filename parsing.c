@@ -29,7 +29,7 @@ bool parse_update(char* query, char* field_filter, char* value_filter, char* fie
     return true;
 }
 
-bool parse_insert(char* query, char* fname, char* lname,  char* section, struct tm* birthdate) {
+bool parse_insert(char* query, char* fname, char* lname,unsigned* id, char* section, struct tm* birthdate) {
     char* token = strtok_r(NULL, " ", &query);
     if (token == NULL) {
         return false;
@@ -40,6 +40,11 @@ bool parse_insert(char* query, char* fname, char* lname,  char* section, struct 
         return false;
     }
     strcpy(lname, token);
+    token = strtok_r(NULL, " ", &query);
+    if (token == NULL) {
+        return false;
+    }
+    *id = (unsigned)atol(token);
     token = strtok_r(NULL, " ", &query);
     if (token == NULL) {
         return false;

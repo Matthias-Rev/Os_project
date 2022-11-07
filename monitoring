@@ -1,12 +1,12 @@
 #!/bin/bash
-
+set -m
 # enregistrer les arguments donner dans la commande
 var1=$1 var2=$2 var3=$3 var4=$4
 
 #liste permettant de stocker les PID parents
 list_v=()
 #liste sert à stocker tous les PID lié à tinydb
-list=$(pgrep test_s)
+list=$(pgrep tinydb)
 
 for pid in $list; do
 	#permet de calculer le nombre d'enfant d'un PID
@@ -23,31 +23,50 @@ length=${#list_v[@]}
 
 #permet de détecter l'action à effectuer
 if [ "$var1" = "run" ]; then
+	
+	#permet de changer les valeurs si l'utilisateur n'a entré que un fichier text
+	if [ "$var2" == "-f" ]; then
+		var4=$var3
+		var3="-f"
+		var2=""
+	fi
 	# permet de lancer la db à l'adresse donnée
 	if [ "$var2" != "" ]; then
 		#vérifie si le fichier mentionner existe
-		if [ -f "$var2" ];then
+		if [ -f "$var2" ]; then
 			#recherche si il y a un request file donné dans la commande
 			if [ "$var3" == "-f" ]; then
-				./test_s $var2 < $var4
+				./tinydb $var2 < $var4 &
+				echo "The proccess pid is $!"
+				fg
 			else
-				./test_s $var2
+				./tinydb $var2 &
+				echo "The proccess pid is $!"
+				fg
 			fi
 		else
 			#la db n'existe pas donc on crée un fichier vide
 			echo "/!\ The specified file doesn't exist"
 			touch $var2
 			if [ "$var3" == "-f" ]; then
-				./test_s $var2 < $var4
+				./tinydb $var2 < $var4 &
+				echo "The proccess pid is $!"
+				fg
 			else
-				./test_s $var2
+				./tinydb $var2 &
+				echo "The proccess pid is $!"
+				fg
 			fi
 		fi
 	else
-		if [ "$var3" == "-f"];then
-			./test_s < $var4
+		if [ "$var3" == "-f" ]; then
+			./tinydb < $var4 &
+			echo "The proccess pid is $!"
+			fg
 		else
-			./test_s
+			./tinydb &
+			echo "The proccess pid is $!"
+			fg
 		fi
 	fi
 fi

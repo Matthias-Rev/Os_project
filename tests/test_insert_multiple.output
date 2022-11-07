@@ -1,0 +1,164 @@
+
+Welcome to the Tiny Database!
+ID:289403  First name: Quentin Last name: Marchandise section: maths née le 28/04/2000 
+ID:864030  First name: Hadrien Last name: Legast section: info née le 30/09/1998 
+ID:111111  First name: Bastien Last name: Durandal section: pharma née le 12/12/1994 
+ID:234556  First name: Corentin Last name: Francois section: physics née le 12/12/1994 
+ID:878787  First name: Emeline Last name: Lecomte section: chemistry née le 15/04/1993 
+ID:472905  First name: Diane Last name: Vancauwelaert section: pharma née le 08/08/1998 
+ID:928453  First name: Fabienne Last name: Deschamps section: info née le 06/07/1997 
+ID:8492742  First name: Anatole Last name: Lanegris section: info née le 07/05/1999 
+ID:985432  First name: Gaspard Last name: Francois section: chemistry née le 04/04/1995 
+Done !
+
+46
+query_opt: Quentin Marchandise 0 maths 28/04/2000
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+40
+query_opt: Hadrien Legast 1 info 30/09/1998
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+44
+query_opt: Bastien Durandal 2 pharma 12/12/1994
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+46
+query_opt: Corentin Francois 3 physics 12/12/1994
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+40
+query_opt: Anatole Lanegris 4 info 7/5/1999
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+45
+query_opt: Diane Vancauwelaert 5 pharma 8/8/1998
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+46
+Je suis PID = 17279,SIGUSR2 reçu
+query_opt: Emeline Lecomte 6 chemistry 15/04/1993
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+42
+query_opt: Fabienne Deschamps 7 info 6/7/1997
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+45
+query_opt: Gaspard Francois 8 chemistry 4/4/1995
+
+query_nam: insert
+ P : La valeur 0 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 1 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 2 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+P : La valeur 3 du tableau est = 0
+Je suis PID = 17279,SIGUSR2 reçu
+
+P : je me mets en pause, PID =17279
+
+PPPPPPPPPPPPPPPP: je me réveille
+6
+PPP :FIN DE LIGNE
+L'utilsateur a appuyé sur CTRL+C
+ID:289403  First name: Quentin Last name: Marchandise section: maths née le 28/04/2000 
+ID:864030  First name: Hadrien Last name: Legast section: info née le 30/09/1998 
+ID:111111  First name: Bastien Last name: Durandal section: pharma 

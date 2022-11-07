@@ -31,7 +31,7 @@ bool parse_update(char* query_arguments, char* field_filter, char* value_filter,
  * ```
  * @return:false if the parsing was successful, true otherwise
  **/
-bool parse_insert(char* query_arguments, char* fname, char* lname , char* section, struct tm* birthdate);
+bool parse_insert(char* query, char* fname, char* lname,unsigned* id, char* section, struct tm* birthdate); 
 
 /** 
  * Parse field=value selectors.

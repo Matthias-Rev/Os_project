@@ -24,13 +24,22 @@ enum {SEGMENT_SIZE = 0x6400};
 #define WRITE 1
 #define QSIZE 256
 
+
 using namespace std;
 
 int count=0;
 //database_t db;
 
+typedef struct {
+  int update; /** The list of students **/
+  int deletes;    /** The logical size of the list **/
+  int select;
+  int insert;	 /** The physical size of the list **/
+} dock;
+
 const char *db_path = "../students.bin";
-database_t *db = (database_t*)mmap(NULL, sizeof(database_t)*4096, PROT_READ|PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS,-1,0);
+dock *s = (dock*)mmap(NULL, sizeof(dock), PROT_READ|PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS,-1,0);
+database_t *db = (database_t*)mmap(NULL, sizeof(database_t), PROT_READ|PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS,-1,0);
 void handler(int signal);
 void child1(int read_fd);
 void child2(int read_fd);
@@ -42,6 +51,15 @@ static void action(int sig){
 	switch (sig){
 		case SIGUSR1: printf("Fct Action : Signal SIGUSR1 reçu\n db_save\n");
 		//db_save(&db, db_path); 
+	}
+}
+
+bool check(dock *s){
+	if (s->select ==0 && s->deletes==0 && s->update == 0 && s->insert == 0){
+		return true;
+	}
+	else{
+		return false;
 	}
 }
 
@@ -65,6 +83,10 @@ int main(int argc, char const *argv[]){
 	pipe(del_fd);
 	pipe(up_fd);	
 	pid_t pid;
+	s->update = 0;
+	s->deletes = 0;
+	s->insert = 0;
+	s->select= 0;
 	//creat childs
 	for(int i=0; i<4; i++){
 		if ((pid=fork()) == 0){
@@ -130,7 +152,6 @@ int main(int argc, char const *argv[]){
 			
 		//Child's behavior
 		else if(pid == 0 && getpid()==select){
-			cout << db->psize;
 			close(sel_fd[WRITE]);
 			child1(sel_fd[READ]);
 			if(count == 1){
@@ -140,7 +161,6 @@ int main(int argc, char const *argv[]){
 			}
 		}
 		else if(pid == 0 && getpid()==insert){
-			cout << db->psize;
 			close(ins_fd[WRITE]);
 			child2(ins_fd[READ]);
 			if(count==1){
@@ -185,6 +205,7 @@ void handler(int signal){
 			student_to_str(buffer, s);
 		}
 		count++;
+		db_save(db, db_path);
 		exit(0);
 	}
 }
@@ -193,7 +214,9 @@ void handler(int signal){
 void child1(int read_fd){
 	char querie[QSIZE];
 	read(read_fd,querie,sizeof(querie));
+	s->select = 1; 
 	query_select(db, querie);
+	s->select = 0;
 }
 void child2(int read_fd){
 	char querie[QSIZE];
@@ -215,10 +238,9 @@ void child4(int read_fd){
 void parent(int write_fd, int write_fd2, int write_fd3, int write_fd4){
 	char query_nam[256];
 	char query_opt[256];
-	
+	cout << s->select;
 	fgets(query_nam, 256, stdin);
 	if (isatty(fileno(stdin))){
-		
 		query_nam[strlen(query_nam)-1] = '\0'; 
 	}
 	char *ptr = query_nam;

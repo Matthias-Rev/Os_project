@@ -18,6 +18,8 @@ void db_save(database_t *db, const char *path) {
         perror("Could not write in the DB file");
         exit(1);
     }
+	munmap(db->data, db->psize);
+	munmap(db, sizeof(database_t));
     fclose(f);
 }
 
@@ -41,7 +43,7 @@ void db_load(database_t *db, const char *path) {
 
 void db_init(database_t *db) {
   db->lsize = 0;
-  db->psize = 1000;
+  db->psize = 5;
   //if(mmap(db->data, sizeof(student_t)*db->psize, PROT_READ | PROT_WRITE,
 							//MAP_SHARED | MAP_ANONYMOUS,-1,0)){ cout << "sucessfuly shared\n";}
   db->data = (student_t*)mmap(NULL,sizeof (student_t) * db->psize, PROT_READ|PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS,-1,0);
@@ -65,9 +67,10 @@ void db_extend(database_t *db){
 		student_t* old_values = db->data;
 		size_t old_size = db->psize;
 		db->psize = db->psize * 2;
-        db->data = (student_t *) mmap(NULL,sizeof (student_t) * db->psize, PROT_READ|PROT_WRITE,MAP_SHARED,-1,0);
+        //db->data = (student_t *) mmap(NULL,sizeof (student_t) * db->psize, PROT_READ|PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS,-1,0);
+        mmap(db->data,sizeof (student_t) * db->psize, PROT_READ|PROT_WRITE,MAP_SHARED | MAP_ANONYMOUS,-1,0);
 		memcpy(db->data, old_values, old_size* sizeof(student_t));
-        free(old_values);
+        //free(old_values);
 	}
 }
 

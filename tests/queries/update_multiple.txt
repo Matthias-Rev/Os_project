@@ -1,1 +1,7 @@
-update section=pharma set fname=Pharmacien
+update section=pharma set id=15
+select fname=Wilbert
+update section=pharma set id=15
+select section=pharma
+update section=pharma set id=15
+select fname=Wilbert
+update section=pharma set id=15
